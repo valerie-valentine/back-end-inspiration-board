@@ -41,24 +41,40 @@ def create_card():
     return jsonify({"card":new_card.to_dict()}),201
 
 
-#POST /cards/1/boards
 @boards_bp.route("/<board_id>/cards", methods=["POST"])
 def post_card_to_board(board_id):
     board = validate_model(Board, board_id)
-    cards_to_add = request.get_json()
-    new_cards_to_add_board = []
 
-    for card_id in cards_to_add["card_ids"]:
-        new_card = validate_model(Card, card_id)
-        new_cards_to_add_board.append(new_card)
-    
-    board.cards= new_cards_to_add_board
+    card_data = request.get_json()
+    if "message" not in card_data:
+        return jsonify({"message": "Invalid card data"}), 400
+
+    new_card = Card(message=card_data["message"], likes_count=0)
+    board.cards.append(new_card)
+
+    db.session.add(new_card)
     db.session.commit()
 
-    return make_response({
-        "id": board.board_id,
-        "card_ids": [card.card_id for card in board.cards]
-    },200)
+    return jsonify(new_card.to_dict()), 201
+
+#POST /1/cards
+# @boards_bp.route("/<board_id>/cards", methods=["POST"])
+# def post_card_to_board(board_id):
+#     board = validate_model(Board, board_id)
+#     cards_to_add = request.get_json()
+#     new_cards_to_add_board = []
+
+#     for card_id in cards_to_add["card_ids"]:
+#         new_card = validate_model(Card, card_id)
+#         new_cards_to_add_board.append(new_card)
+    
+#     board.cards= new_cards_to_add_board
+#     db.session.commit()
+
+#     return make_response({
+#         "id": board.board_id,
+#         "card_ids": [card.card_id for card in board.cards]
+#     },200)
 
 #GET /cards 
 @cards_bp.route("", methods=["GET"])
@@ -67,6 +83,14 @@ def read_all_cards():
     cards = cards_query.all()
     cards_response = [card.to_dict() for card in cards]
     return jsonify(cards_response)
+
+#GET/ boards/1/cards
+@boards_bp.route("/<board_id>/cards", methods=["GET"])
+def read_cards_for_board(board_id):
+    board = validate_model(Board, board_id)
+    cards = board.cards
+    cards_response = [card.to_dict() for card in cards]
+    return jsonify(cards_response), 200
 
 #DELETE /cards/1
 @cards_bp.route("/<card_id>", methods=["DELETE"])
@@ -115,17 +139,5 @@ def read_all_boards():
     boards = Board.query.all()
     boards_response = [board.to_dict() for board in boards]
     return jsonify(boards_response), 200
-
-#GET/ boards/1/cards
-@boards_bp.route("/<board_id>/cards", methods=["GET"])
-def read_cards_for_board(board_id):
-    board = validate_model(Board, board_id)
-    cards = board.cards
-    cards_response = [card.to_dict() for card in cards]
-    return jsonify(cards_response), 200
-
-
-
-
 
 
