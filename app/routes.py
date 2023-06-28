@@ -22,24 +22,6 @@ def validate_model(cls, model_id):
     return model
 
 # Card routes
-#POST /cards
-@cards_bp.route("", methods=["POST"])
-def create_card():
-    request_body = request.get_json()
-    if ("message" not in request_body or "likes_count" not in request_body):
-        abort(make_response({"details": "Invalid data"},400))
-
-    new_card = Card(
-        message=request_body["message"],
-        likes_count=request_body["likes_count"],
-        # completed_at=request_body["completed_at"]
-    )
-
-    db.session.add(new_card)
-    db.session.commit()
-
-    return jsonify({"card":new_card.to_dict()}),201
-
 
 @boards_bp.route("/<board_id>/cards", methods=["POST"])
 def post_card_to_board(board_id):
@@ -56,25 +38,6 @@ def post_card_to_board(board_id):
     db.session.commit()
 
     return jsonify(new_card.to_dict()), 201
-
-#POST /1/cards
-# @boards_bp.route("/<board_id>/cards", methods=["POST"])
-# def post_card_to_board(board_id):
-#     board = validate_model(Board, board_id)
-#     cards_to_add = request.get_json()
-#     new_cards_to_add_board = []
-
-#     for card_id in cards_to_add["card_ids"]:
-#         new_card = validate_model(Card, card_id)
-#         new_cards_to_add_board.append(new_card)
-    
-#     board.cards= new_cards_to_add_board
-#     db.session.commit()
-
-#     return make_response({
-#         "id": board.board_id,
-#         "card_ids": [card.card_id for card in board.cards]
-#     },200)
 
 #GET /cards 
 @cards_bp.route("", methods=["GET"])
