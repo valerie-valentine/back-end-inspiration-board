@@ -41,7 +41,7 @@ def one_card(app):
 
 @pytest.fixture
 def one_board(app):
-    board = Board(title="Test Board", owner="Test Owner")  # Add the owner attribute
+    board = Board(title="Test Board", owner="Test Owner") 
 
     db.session.add(board)
     db.session.commit()

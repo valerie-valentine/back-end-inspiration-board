@@ -81,3 +81,30 @@ def test_create_board(client, one_board):
     assert response_body["board"]["title"] == "Test Board"
     assert "owner" in response_body["board"]
     assert response_body["board"]["owner"] == "Test Owner"
+
+def test_read_one_board(client, one_board):
+    # Arrange
+    board_id = one_board.board_id
+
+    # Act
+    response = client.get(f"/boards/{board_id}")
+    response_body = response.get_json()
+
+    # Assert
+    assert response.status_code == 200
+    assert "board" in response_body
+    assert "title" in response_body["board"]
+    assert response_body["board"]["title"] == one_board.title
+
+def test_read_all_boards(client, one_board):
+    # Arrange
+    board_title = one_board.title
+
+    # Act
+    response = client.get("/boards")
+    response_body = response.get_json()
+
+    # Assert
+    assert response.status_code == 200
+    assert isinstance(response_body, list)
+    assert any(board["title"] == board_title for board in response_body)
