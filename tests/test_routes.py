@@ -62,4 +62,22 @@ def test_update_card(client, one_card):
     assert response.status_code == 200
     assert "likes_count" in response_body
     assert response_body["likes_count"] == new_likes_count
-    
+
+def test_create_board(client, one_board):
+    # Arrange
+    board_data = {
+        "title": "Test Board",
+        "owner": "Test Owner"  
+    }
+
+    # Act
+    response = client.post("/boards", json=board_data)
+    response_body = response.get_json()
+
+    # Assert
+    assert response.status_code == 201
+    assert "board" in response_body
+    assert "title" in response_body["board"]
+    assert response_body["board"]["title"] == "Test Board"
+    assert "owner" in response_body["board"]
+    assert response_body["board"]["owner"] == "Test Owner"

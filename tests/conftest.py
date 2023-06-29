@@ -29,7 +29,6 @@ def client(app):
 
 @pytest.fixture
 def one_card(app):
-    # Seed a single card and associated board in the test database
     board = Board(title="Test Board")
     card = Card(message="Test Card", likes_count=0)
     
@@ -40,4 +39,12 @@ def one_card(app):
 
     return card
 
+@pytest.fixture
+def one_board(app):
+    board = Board(title="Test Board", owner="Test Owner")  # Add the owner attribute
+
+    db.session.add(board)
+    db.session.commit()
+
+    return board
 
