@@ -2,10 +2,11 @@ from app.models.board import Board
 from app.models.card import Card
 import pytest
 
-# Test for post_card_to_board route
-def test_post_card_to_board(client):
+#Tests for card routes
+
+def test_post_card_to_board(client, one_card):
     # Arrange
-    board_id = 1
+    board_id = one_card.board.board_id
     card_data = {"message": "Test card"}
 
     # Act
@@ -16,6 +17,7 @@ def test_post_card_to_board(client):
     assert response.status_code == 201
     assert "message" in response_body
     assert response_body["message"] == card_data["message"]
+
 
 def test_read_all_cards(client):
     response = client.get("/cards")
@@ -35,3 +37,29 @@ def test_read_cards_for_board(client, one_card):
     # Assert
     assert response.status_code == 200
     assert isinstance(response_body, list)
+
+def test_delete_card(client, one_card):
+    # Prepare
+    card_id = one_card.card_id
+
+    # Act
+    response = client.delete(f"/cards/{card_id}")
+
+    # Assert
+    assert response.status_code == 200
+
+def test_update_card(client, one_card):
+    # Prepare
+    card_id = one_card.card_id
+    new_likes_count = 10
+    update_data = {"likes_count": new_likes_count}
+
+    # Act
+    response = client.patch(f"/cards/{card_id}", json=update_data)
+    response_body = response.get_json()
+
+    # Assert
+    assert response.status_code == 200
+    assert "likes_count" in response_body
+    assert response_body["likes_count"] == new_likes_count
+    

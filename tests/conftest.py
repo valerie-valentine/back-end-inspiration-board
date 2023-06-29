@@ -39,3 +39,5 @@ def one_card(app):
     db.session.commit()
 
     return card
+
+
