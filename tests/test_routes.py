@@ -43,7 +43,7 @@ def test_increase_card_likes_count(client, one_card):
     initial_likes_count = one_card.likes_count
 
     # Act
-    response = client.patch(f"/cards/{card_id}")
+    response = client.patch(f"/cards/{card_id}/increase_likes")
 
     # Assert
     assert response.status_code == 200
