@@ -22,7 +22,6 @@ def validate_model(cls, model_id):
     return model
 
 # Card routes
-
 @boards_bp.route("/<board_id>/cards", methods=["POST"])
 def post_card_to_board(board_id):
     board = validate_model(Board, board_id)
@@ -62,19 +61,24 @@ def delete_card(card_id):
     db.session.delete(card)
     db.session.commit()
 
-    return jsonify({"details": f'Card {card_id} "{card.card_id}" successfully deleted'}),200
+    return jsonify({"details": f'Card {card_id} successfully deleted'}),200
 
 #PATCH /cards/1
-@cards_bp.route("/<card_id>", methods=["PATCH"])
-def update_card(card_id):
+@cards_bp.route("/<card_id>/increase_likes", methods=["PATCH"])
+def increase_card_likes_count(card_id):
     card_id = int(card_id)
     card = Card.query.get(card_id)
-    print(card.likes_count)
-    request_body = request.get_json()
-    card.likes_count = request_body["likes_count"]
+    card.likes_count += 1 
     db.session.commit()
+    return jsonify({"card":card.to_dict()}),200
 
-    return jsonify({"likes_count":card.likes_count}),200
+@cards_bp.route("/<card_id>/decrease_likes", methods=["PATCH"])
+def decrease_card_likes_count(card_id):
+    card_id = int(card_id)
+    card = Card.query.get(card_id)
+    card.likes_count -= 1 
+    db.session.commit()
+    return ({"card":card.to_dict()}),200
 
 #Board routes
 #POST / boards

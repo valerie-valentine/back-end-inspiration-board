@@ -3,16 +3,13 @@ from app import create_app
 from app import db
 from app.models.board import Board
 from app.models.card import Card
+from datetime import datetime
 from flask.signals import request_finished
-
-
 
 @pytest.fixture
 def app():
     # create the app with a test config dictionary
-    # app = create_app({"TESTING": True})
-    app = create_app()
-
+    app = create_app({"TESTING": True})
 
     with app.app_context():
         db.create_all()
@@ -31,17 +28,14 @@ def client(app):
 def one_card(app):
     board = Board(title="Test Board")
     card = Card(message="Test Card", likes_count=0)
-    
     board.cards.append(card)
-    
     db.session.add(board)
     db.session.commit()
-
     return card
 
 @pytest.fixture
 def one_board(app):
-    board = Board(title="Test Board", owner="Test Owner") 
+    board = Board(board_id= 1, title="Test Board", owner="Test Owner") 
 
     db.session.add(board)
     db.session.commit()
