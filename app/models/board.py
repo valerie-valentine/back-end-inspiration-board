@@ -8,12 +8,12 @@ class Board(db.Model):
 
 
     def to_dict(self):
-        cards_dict= [card.to_dict() for card in self.cards]
+        # cards_dict= [card.to_dict() for card in self.cards]
         return{
             "id":self.board_id,
             "title":self.title,
             "owner":self.owner,
-            "cards":cards_dict 
+            # "cards":cards_dict 
         }
 
     @classmethod
