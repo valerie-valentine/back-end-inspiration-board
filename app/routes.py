@@ -52,7 +52,10 @@ def read_cards_for_board(board_id):
     board = validate_model(Board, board_id)
     cards = board.cards
     cards_response = [card.to_dict() for card in cards]
+    cards_response.sort(key=lambda x: x["id"])
     return jsonify(cards_response), 200
+
+    
 
 #DELETE /cards/1
 @cards_bp.route("/<card_id>", methods=["DELETE"])
