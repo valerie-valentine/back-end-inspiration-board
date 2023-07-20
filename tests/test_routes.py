@@ -60,7 +60,8 @@ def test_create_board(client):
     board_data = {
         "board_id": board_id,
         "title": "Test Board",
-        "owner": "Test Owner"  
+        "owner": "Test Owner",
+        "image": "Image"  
     }
 
     # Act
