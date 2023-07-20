@@ -110,4 +110,14 @@ def read_all_boards():
     boards_response = [board.to_dict() for board in boards]
     return jsonify(boards_response), 200
 
+# DELETE /boards/1
+@boards_bp.route("/<board_id>", methods=["DELETE"])
+def delete_board(board_id):
+    board = validate_model(Board, board_id)
+    db.session.delete(board)
+    db.session.commit()
+
+    return jsonify({"details": f'Board {board_id} successfully deleted'}), 200
+
+
 
