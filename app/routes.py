@@ -83,6 +83,17 @@ def decrease_card_likes_count(card_id):
     db.session.commit()
     return ({"card":card.to_dict()}),200
 
+#PATCH /cards/1
+@cards_bp.route("/<card_id>/message", methods=["PATCH"])
+def update_card_message(card_id):
+    card_data = request.get_json()
+    card_id = int(card_id)
+    card = Card.query.get(card_id)
+    card.message = card_data["message"]
+    db.session.commit()
+    return jsonify({"card":card.to_dict()}),200
+
+
 #Board routes
 #POST / boards
 @boards_bp.route("", methods=["POST"])
@@ -109,6 +120,7 @@ def read_all_boards():
     boards = Board.query.all()
     boards_response = [board.to_dict() for board in boards]
     return jsonify(boards_response), 200
+
 
 # DELETE /boards/1
 @boards_bp.route("/<board_id>", methods=["DELETE"])
